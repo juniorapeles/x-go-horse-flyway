@@ -1,1 +1,1 @@
-UPDATE users SET email = CONCAT(username, '@example.com');
+UPDATE users SET email = CONCAT(name, '@example.com');
