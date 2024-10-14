@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sql_server
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong!Passw0rd
+      - MSSQL_PID=Developer  # ou Express para a edição Express
+    ports:
+      - "1433:1433"  # Porta padrão do SQL Server
+    volumes:
+      - sqlserver_data:/var/opt/mssql  # Persistência de dados
+
+volumes:
+  sqlserver_data:

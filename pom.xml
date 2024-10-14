@@ -34,10 +34,10 @@
 			<artifactId>flyway-core</artifactId>
 		</dependency>
 
-		<!-- Dependência do PostgreSQL -->
+		<!-- Dependência do SQL Server -->
 		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>mssql-jdbc</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -61,14 +61,17 @@
 			<plugin>
 				<groupId>org.flywaydb</groupId>
 				<artifactId>flyway-maven-plugin</artifactId>
-				<version>8.5.11</version> <!-- Definindo a versão do Flyway -->
+				<version>8.5.11</version>
 				<configuration>
-					<url>jdbc:postgresql://localhost:5434/seu_banco</url>
-					<user>seu_usuario</user>
-					<password>sua_senha</password>
+					<url>jdbc:sqlserver://localhost:1433;databaseName=master</url>
+					<user>sa</user>
+					<password>YourStrong!Passw0rd</password>
 					<schemas>
-						<schema>public</schema>
+						<schema>dbo</schema>
 					</schemas>
+					<locations>
+						<location>classpath:db/migration/sqlserver</location>
+					</locations>
 				</configuration>
 				<executions>
 					<execution>
