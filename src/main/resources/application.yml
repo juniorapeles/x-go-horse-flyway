@@ -3,42 +3,48 @@ server:
 
 spring:
   profiles:
-    active: ${DB_TYPE:sqlserver}  # O perfil padrão é PostgreSQL, mas pode ser alterado via variável de ambiente
-
----
-#spring:
-#  config:
-#    activate:
-#      on-profile: postgres
-#  datasource:
-#    url: jdbc:postgresql://localhost:5432/seu_banco_postgres
-#    username: seu_usuario_postgres
-#    password: sua_senha_postgres
-#  jpa:
-#    hibernate:
-#      ddl-auto: update
-#  flyway:
-#    enabled: true
-#    url: jdbc:postgresql://localhost:5432/seu_banco_postgres
-#    user: seu_usuario_postgres
-#    password: sua_senha_postgres
-#    locations: classpath:db/migration/postgres  # Localização das migrations do PostgreSQL
+    active: ${DB_TYPE:postgres}  # Define o perfil ativo, podendo ser 'postgres' ou 'sqlserver'
 
 ---
 spring:
   config:
     activate:
-      on-profile: sqlserver
+      on-profile: postgres  # Ativa este bloco quando o perfil é 'postgres'
+
   datasource:
-    url: jdbc:sqlserver://localhost:1433;databaseName=seu_banco_sqlserver
-    username: sa
-    password: YourStrong!Passw0rd  # A senha que você definiu no docker-compose.yml
+    url: ${DB_URL:jdbc:postgresql://localhost:5434/seu_banco}
+    username: ${DB_USER:seu_usuario}
+    password: ${DB_PASSWORD:sua_senha}
+
   jpa:
     hibernate:
       ddl-auto: update
+
   flyway:
     enabled: true
-    url: jdbc:sqlserver://localhost:1433;databaseName=seu_banco_sqlserver
-    user: sa
-    password: YourStrong!Passw0rd  # A senha que você definiu no docker-compose.yml
-    locations: classpath:db/migration/sqlserver  # Localização das migrations do SQL Server
+    url: ${DB_URL:jdbc:postgresql://localhost:5434/seu_banco}
+    user: ${DB_USER:seu_usuario}
+    password: ${DB_PASSWORD:sua_senha}
+    locations: classpath:db/migration/postgres
+
+---
+spring:
+  config:
+    activate:
+      on-profile: sqlserver  # Ativa este bloco quando o perfil é 'sqlserver'
+
+  datasource:
+    url: ${DB_URL:jdbc:sqlserver://localhost:1433;databaseName=master}
+    username: ${DB_USER:sa}
+    password: ${DB_PASSWORD:YourStrong!Passw0rd}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  flyway:
+    enabled: true
+    url: ${DB_URL:jdbc:sqlserver://localhost:1433;databaseName=seu_banco_sqlserver}
+    user: ${DB_USER:sa}
+    password: ${DB_PASSWORD:YourStrong!Passw0rd}
+    locations: classpath:db/migration/sqlserver

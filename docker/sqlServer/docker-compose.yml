@@ -6,12 +6,12 @@ services:
     container_name: sql_server
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=YourStrong!Passw0rd
-      - MSSQL_PID=Developer  # ou Express para a edição Express
+      - SA_PASSWORD=YourStrong!Passw0rd  # A senha precisa ser complexa e segura
+      - MSSQL_PID=Developer  # Pode ser 'Express' para a edição gratuita
     ports:
-      - "1433:1433"  # Porta padrão do SQL Server
+      - "1433:1433"
     volumes:
-      - sqlserver_data:/var/opt/mssql  # Persistência de dados
+      - sqlserver_data:/var/opt/mssql  # Persistência dos dados
 
 volumes:
   sqlserver_data:

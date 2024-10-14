@@ -5,7 +5,7 @@ services:
     image: postgres:latest
     container_name: postgres_db
     environment:
-      POSTGRES_DB: seu_banco
+      POSTGRES_DB:
       POSTGRES_USER: seu_usuario
       POSTGRES_PASSWORD: sua_senha
     ports:
@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/seu_banco
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5434/seu_banco
       SPRING_DATASOURCE_USERNAME: seu_usuario
       SPRING_DATASOURCE_PASSWORD: sua_senha
     depends_on:
