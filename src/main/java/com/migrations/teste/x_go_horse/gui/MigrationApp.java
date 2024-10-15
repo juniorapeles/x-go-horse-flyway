@@ -1,6 +1,5 @@
 package com.migrations.teste.x_go_horse.gui;
 
-import com.migrations.teste.x_go_horse.config.AppConfig;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -10,15 +9,12 @@ import javafx.stage.Stage;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.output.MigrateResult;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-
 public class MigrationApp extends Application {
     private TextArea outputArea;
 
     public static void main(String[] args) {
+        // Definindo a variável de ambiente DB_TYPE
+        System.setProperty("DB_TYPE", "sqlserver"); // ou "postgres", dependendo do banco de dados
         launch(args);
     }
 
@@ -41,18 +37,22 @@ public class MigrationApp extends Application {
     }
 
     private void runMigrations() {
-        AppConfig config = new AppConfig("src/main/resources/config.conf");
+        // Defina suas credenciais de banco de dados aqui
+        String dbUrl = "jdbc:sqlserver://<hostname>:<port>;databaseName=<dbname>"; // Substitua pelos valores corretos
+        String dbUser = "<username>"; // Substitua pelo seu usuário
+        String dbPassword = "<password>"; // Substitua pela sua senha
+        String migrationsPath = "filesystem:src/main/resources/db/migration"; // Ajuste o caminho das migrações, se necessário
 
         // Configurar o Flyway
         Flyway flyway = Flyway.configure()
-                .dataSource(config.getDbUrl(), config.getDbUser(), config.getDbPassword())
-                .locations(config.getMigrationsPath()) // Localização das migrações
+                .dataSource(dbUrl, dbUser, dbPassword) // Configura o DataSource
+                .locations(migrationsPath) // Localização das migrações
                 .load();
 
         // Executar migrações e capturar o resultado
         try {
-            MigrateResult migrationsCount = flyway.migrate();
-            outputArea.setText("Migrations executed successfully: " + migrationsCount);
+            MigrateResult migrateResult = flyway.migrate();
+            outputArea.setText("Migrations executed successfully: " + migrateResult.getClass());
         } catch (Exception e) {
             outputArea.setText("Error running migrations: " + e.getMessage());
         }
