@@ -7,7 +7,12 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.MigrationInfo;
 import org.flywaydb.core.api.output.MigrateResult;
+import org.flywaydb.core.api.output.MigrateOutput;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class MigrationApp extends Application {
     private TextArea outputArea;
@@ -37,11 +42,10 @@ public class MigrationApp extends Application {
     }
 
     private void runMigrations() {
-        // Defina suas credenciais de banco de dados aqui
-        String dbUrl = "jdbc:sqlserver://<hostname>:<port>;databaseName=<dbname>"; // Substitua pelos valores corretos
-        String dbUser = "<username>"; // Substitua pelo seu usuário
-        String dbPassword = "<password>"; // Substitua pela sua senha
-        String migrationsPath = "filesystem:src/main/resources/db/migration"; // Ajuste o caminho das migrações, se necessário
+        String dbUrl = System.getenv().getOrDefault("DB_URL", "jdbc:sqlserver://localhost:1433;databaseName=master");
+        String dbUser = System.getenv().getOrDefault("DB_USER", "sa");
+        String dbPassword = System.getenv().getOrDefault("DB_PASSWORD", "YourStrong!Passw0rd");
+        String migrationsPath = "filesystem:src/main/resources/db/migration/sqlserver"; // Ajuste conforme necessário
 
         // Configurar o Flyway
         Flyway flyway = Flyway.configure()
@@ -52,9 +56,37 @@ public class MigrationApp extends Application {
         // Executar migrações e capturar o resultado
         try {
             MigrateResult migrateResult = flyway.migrate();
-            outputArea.setText("Migrations executed successfully: " + migrateResult.getClass());
+
+            // Construindo uma string detalhada sobre as migrações
+            StringBuilder resultDetails = new StringBuilder();
+            resultDetails.append("Migrations executed successfully:\n");
+            resultDetails.append("Migrations applied: ").append(migrateResult.migrationsExecuted).append("\n");
+            resultDetails.append("Current version: ").append(migrateResult.targetSchemaVersion).append("\n");
+
+            // Iterar manualmente para evitar uso de lambda (compatível com Java 8)
+            for (MigrateOutput migration : migrateResult.migrations) {
+                resultDetails.append("Version: ").append(migration.version).append("\n");
+                resultDetails.append("Description: ").append(migration.description).append("\n");
+                resultDetails.append("Type: ").append(migration.type).append("\n");
+                resultDetails.append("Execution time: ").append(migration.executionTime).append("ms\n\n");
+            }
+
+            outputArea.setText(resultDetails.toString());
         } catch (Exception e) {
-            outputArea.setText("Error running migrations: " + e.getMessage());
+                // Exibir erro detalhado no TextArea
+                StringBuilder errorDetails = new StringBuilder();
+
+                // Mensagem básica do erro
+                errorDetails.append("Error running migrations: ").append(e.getMessage()).append("\n\n");
+
+                // Capturar e exibir o stack trace completo
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                e.printStackTrace(pw);
+                errorDetails.append("Stack Trace:\n").append(sw.toString()).append("\n");
+
+                // Exibir o erro completo no TextArea
+                outputArea.setText(errorDetails.toString());
+            }
         }
     }
-}
