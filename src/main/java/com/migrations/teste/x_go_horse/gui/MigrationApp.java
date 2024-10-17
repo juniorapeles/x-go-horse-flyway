@@ -1,5 +1,6 @@
 package com.migrations.teste.x_go_horse.gui;
 
+import com.migrations.teste.x_go_horse.ConexaoDb;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,6 +17,7 @@ import java.io.StringWriter;
 
 public class MigrationApp extends Application {
     private TextArea outputArea;
+    private ConexaoDb conexao = new ConexaoDb("jdbc:sqlserver://localhost:1433;databaseName=master","sa","YourStrong!Passw0rd","filesystem:src/main/resources/db/migration/sqlserver");
 
     public static void main(String[] args) {
         // Definindo a variável de ambiente DB_TYPE
@@ -42,10 +44,10 @@ public class MigrationApp extends Application {
     }
 
     private void runMigrations() {
-        String dbUrl = System.getenv().getOrDefault("DB_URL", "jdbc:sqlserver://localhost:1433;databaseName=master");
-        String dbUser = System.getenv().getOrDefault("DB_USER", "sa");
-        String dbPassword = System.getenv().getOrDefault("DB_PASSWORD", "YourStrong!Passw0rd");
-        String migrationsPath = "filesystem:src/main/resources/db/migration/sqlserver"; // Ajuste conforme necessário
+          dbUrl = conexao.getDbUrl();
+          dbUser = conexao.getDbUser();
+          dbPassword = conexao.getDbPassword();
+          migrationsPath = conexao.getMigrationsPath();
 
         // Configurar o Flyway
         Flyway flyway = Flyway.configure()
