@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    active: ${DB_TYPE:postgres}  # Define o perfil ativo, podendo ser 'postgres' ou 'sqlserver'
+    active: ${DB_TYPE:sqlserver}  # Define o perfil ativo, podendo ser 'postgres', 'sqlserver' ou 'oracle'
 
 ---
 spring:
@@ -34,18 +34,39 @@ spring:
       on-profile: sqlserver  # Ativa este bloco quando o perfil é 'sqlserver'
 
   datasource:
-    url: ${DB_URL:jdbc:sqlserver://localhost:1433;databaseName=master}
+    url: ${DB_URL:jdbc:sqlserver://;serverName=localhost;databaseName=master}
     username: ${DB_USER:sa}
-    password: ${DB_PASSWORD:YourStrong!Passw0rd}
+    password: ${DB_PASSWORD:mySecurePassword123}
 
   jpa:
     hibernate:
       ddl-auto: update
 
+  flyway:
+    enabled: true
+    url: ${DB_URL:jdbc:sqlserver://;serverName=localhost;databaseName=master}
+    user: ${DB_USER:sa}
+    password: ${DB_PASSWORD:mySecurePassword123}
+    locations: classpath:db/migration/sqlserver
+
+---
+spring:
+  config:
+    activate:
+      on-profile: oracle  # Ativa este bloco quando o perfil é 'oracle'
+
+  datasource:
+    url: ${DB_URL:jdbc:oracle:thin:@localhost:1521:ORCL}
+    username: ${DB_USER:oracle_user}
+    password: ${DB_PASSWORD:oracle_password}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
 
   flyway:
     enabled: true
-    url: ${DB_URL:jdbc:sqlserver://localhost:1433;databaseName=seu_banco_sqlserver}
-    user: ${DB_USER:sa}
-    password: ${DB_PASSWORD:YourStrong!Passw0rd}
-    locations: classpath:db/migration/sqlserver
+    url: ${DB_URL:jdbc:oracle:thin:@localhost:1521:ORCL}
+    user: ${DB_USER:oracle_user}
+    password: ${DB_PASSWORD:oracle_password}
+    locations: classpath:db/migration/oracle
