@@ -1,11 +1,11 @@
-package com.migrations.teste.x_go_horse;
+package com.migrations.teste.x_go_horse.entities;
 
 public class ConexaoDb {
 
-    private String dbUrl
-    private String dbUser
-    private String dbPassword
-    private String migrationsPath
+    private String dbUrl;
+    private String dbUser;
+    private String dbPassword;
+    private String migrationsPath;
 
     public ConexaoDb() {
     }

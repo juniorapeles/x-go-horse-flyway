@@ -7,7 +7,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class XGoHorseApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(XGoHorseApplication.class, args);
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				new MigrationApp().setVisible(true);
+			}
+		});
 	}
 
 }
