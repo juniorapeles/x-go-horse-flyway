@@ -1,1 +1,0 @@
-INSERT INTO tb_user (id, nome) VALUES (1, 'Father Marcelo Horse')

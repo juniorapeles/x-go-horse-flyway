@@ -1,5 +1,0 @@
-CREATE TABLE tb_user (
-    id BIGINT PRIMARY KEY IDENTITY(1,1),
-    name NVARCHAR(100) NOT NULL,
-    created_at DATETIME DEFAULT GETDATE()
-);
